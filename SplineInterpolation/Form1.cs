@@ -29,6 +29,8 @@ namespace SplineInterpolation
             BuildFirstDerivative();
             BuildSecondDerivative();
             BuildPoints();
+            UpdatePointsInfo();
+            //solveButton.Enabled = false;
         }
 
         private void BuildSplineInterpolation()
@@ -61,8 +63,24 @@ namespace SplineInterpolation
             chart.Series.FindByName(name).MarkerSize = borderWidth;
 
 
-            for (int i = 0; i < points.Length - 1; i++)
+            for (int i = 0; i < points.Length; i++)
                 chart.Series.FindByName(name).Points.AddXY(points[i].X, points[i].Y);
+        }
+
+        private void UpdatePointsInfo()
+        {
+            StringBuilder sr = new StringBuilder();
+
+            foreach (Point<float> point in viewModel.splineInterpolation.Points)
+            {
+                sr.Append($"({point.X}; {point.Y})\n");
+            }
+            pointsLabel.Text = sr.ToString();
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

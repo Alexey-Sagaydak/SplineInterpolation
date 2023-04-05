@@ -97,5 +97,9 @@
       <Name>MathFunction</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="config.txt" />
+    <Content Include="SLAESolver.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

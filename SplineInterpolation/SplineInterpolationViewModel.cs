@@ -23,10 +23,10 @@ namespace SplineInterpolation
 
         public Point<float>[] GetSplineValues(int derivativePower)
         {
-            int length = Convert.ToInt32((splineInterpolation.Points[splineInterpolation.Points.Length - 1].X - splineInterpolation.Points[0].X) * 10);
+            int length = Convert.ToInt32((splineInterpolation.Points[splineInterpolation.Points.Length - 1].X - splineInterpolation.Points[0].X) * 100);
             Point<float>[] points = new Point<float>[length];
             int index = 0;
-            for (float i = splineInterpolation.Points[0].X; i < splineInterpolation.Points[splineInterpolation.Points.Length - 1].X - 0.1f; i += 0.1f)
+            for (float i = splineInterpolation.Points[0].X; i < splineInterpolation.Points[splineInterpolation.Points.Length - 1].X - 0.01f; i += 0.01f)
             {
                 points[index] = new Point<float>(i, splineInterpolation.CalculateSpline(i, derivativePower));
                 index++;
