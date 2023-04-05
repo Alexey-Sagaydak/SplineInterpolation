@@ -25,16 +25,6 @@ namespace SplineInterpolation
 
             MathFunction.MathFunction mathFunction = new MathFunction.MathFunction(Func);
             Console.WriteLine(mathFunction.CalculateDerivative(5, 5, 0.1f));*/
-            
-            Point[] points = new Point[] { 
-                new Point(-1, -5),
-                new Point(1, -3),
-                new Point(2, 18),
-                new Point(3, 6),
-                new Point(4, -2)
-            };
-            CubeSplineInterpolation cubeSplineInterpolation = new CubeSplineInterpolation(points);
-            Console.WriteLine(cubeSplineInterpolation.SplineValue(2.5f, 0));
         }
     }
 }

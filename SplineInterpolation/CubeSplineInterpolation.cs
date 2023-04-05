@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,18 +10,18 @@ namespace SplineInterpolation
 {
     public class CubeSplineInterpolation
     {
-        private Point[] _points;
+        public Point<float>[] Points;
         private float[] _a;
         private float[] _b;
         private float[] _c;
         private float[] _d;
         private int n;
 
-        public CubeSplineInterpolation(Point[] points)
+        public CubeSplineInterpolation(Point<float>[] points)
         {
             if (points == null)
                 throw new ArgumentNullException(nameof(points));
-            _points= points;
+            Points= points;
             n = points.Length;
             InitializeArrays();
             CalculateCoefficients();
@@ -30,16 +29,16 @@ namespace SplineInterpolation
         }
         private float CalculateCubePolynom(int polynomIndex, float x)
         {
-            return _a[polynomIndex] + _b[polynomIndex] * (x - _points[polynomIndex].X) 
-                + _c[polynomIndex] * (float) Math.Pow(x - _points[polynomIndex].X, 2) 
-                + _d[polynomIndex] * (float) Math.Pow(x - _points[polynomIndex].X, 3); 
+            return _a[polynomIndex] + _b[polynomIndex] * (x - Points[polynomIndex].X) 
+                + _c[polynomIndex] * (float) Math.Pow(x - Points[polynomIndex].X, 2) 
+                + _d[polynomIndex] * (float) Math.Pow(x - Points[polynomIndex].X, 3); 
         }
-        public float SplineValue(float x, int derivativePower)
+        public float CalculateSpline(float x, int derivativePower)
         {
             float y = 0;
             int splineIndex;
             
-            if (x < _points[0].X || x > _points[n - 1].X)
+            if (x < Points[0].X || x > Points[n - 1].X)
                 throw new ArgumentOutOfRangeException(nameof(x));
 
             splineIndex = GetSplineIndex(x);
@@ -50,7 +49,7 @@ namespace SplineInterpolation
         private int GetSplineIndex(float x)
         {
             for (int i = 1; i < n; i++)
-                if (x <= _points[i].X) 
+                if (x <= Points[i].X) 
                     return i - 1;
 
             return -1;
@@ -67,13 +66,13 @@ namespace SplineInterpolation
         private void CalculateA() 
         {
             for (int i = 0; i < _a.Length; i++)
-                _a[i] = _points[i].Y;
+                _a[i] = Points[i].Y;
         }
         
         private void CalculateB() 
         {
             for (int i = 0; i < n - 1; i++)
-                _b[i] = (_points[i + 1].Y - _points[i].Y) / CalculateH(i) - (_c[i + 1] + 2 * _c[i]) * CalculateH(i) / 3.0f;
+                _b[i] = (Points[i + 1].Y - Points[i].Y) / CalculateH(i) - (_c[i + 1] + 2 * _c[i]) * CalculateH(i) / 3.0f;
         }
         
         private void CalculateC() 
@@ -94,7 +93,7 @@ namespace SplineInterpolation
                     matrix[i - 1, j - 1] = A[i, j];
             
             for (int i = 1; i < n - 1; i++)
-                matrix[i - 1, n - 2] = 3 * ((_points[i + 1].Y - _points[i].Y) / CalculateH(i) - (_points[i].Y - _points[i - 1].Y) / CalculateH(i - 1));
+                matrix[i - 1, n - 2] = 3 * ((Points[i + 1].Y - Points[i].Y) / CalculateH(i) - (Points[i].Y - Points[i - 1].Y) / CalculateH(i - 1));
             
             float[] result = sweepMethod.Solve(matrix);
             
@@ -108,8 +107,8 @@ namespace SplineInterpolation
                 _d[i] = (_c[i + 1] - _c[i]) / (3 * CalculateH(i)); 
         }
 
-        private float CalculateH(int index) => _points[index + 1].X - _points[index].X;
-        public float CalculateDerivative(float x, int coeffIndex, int power, float step)
+        private float CalculateH(int index) => Points[index + 1].X - Points[index].X;
+        private float CalculateDerivative(float x, int coeffIndex, int power, float step)
         {
             if (power == 0) return CalculateCubePolynom(coeffIndex, x);
             return (CalculateDerivative(x + step, coeffIndex, power - 1, step)
